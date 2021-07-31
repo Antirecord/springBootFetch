@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login page</title>
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="justify-content-center pagination">
+    <form method="post" action="/login">
+        <div class="border rounded border-1 border-primary p-4 mt-5"
+             style="width: 400px">
+            <p class="fs-2 fw-bold text-start">Please sign in</p>
+            <label class="visually-hidden" for="username">Username</label>
+            <div class="input-group">
+                <div class="input-group-text" style="width: 48px"><b>@</b></div>
+                <input type="text" class="form-control" id="username" name="j_username"
+                       placeholder="username" required>
+            </div>
+            <label class="visually-hidden" for="password">Password</label>
+            <div class="input-group">
+                <div class="input-group-text" style="width: 48px"><b>***</b></div>
+                <input type="password" class="form-control" id="password" name="j_password"
+                       placeholder="password" required>
+            </div>
+            <input class="col-12 btn btn-primary" style="margin-top: 10px" type="submit"/>
+            <p class="small text-start" style="color: #D4D2D2"><b>default users</b><br/>
+                username: <b>admin</b> password: <b>admin</b><br/>
+                username: <b>user</b> pass: <b>user</b></p>
+        </div>
+    </form>
+</div>
+</body>
+</html>
