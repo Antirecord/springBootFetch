@@ -34,3 +34,5 @@ build/
 
 # Project exclude paths
 /exercise313/
+/mvnw.cmd
+/mvnw
