@@ -12,7 +12,7 @@
 <!--<body class="modal-open" style="overflow: hidden; padding-right: 0px;">-->
 <!--if showed modal dialog-->
 <div id="topMenu">
-<!--<div id="topMenu" class="visually-hidden">-->
+    <!--<div id="topMenu" class="visually-hidden">-->
     <div class="d-flex text-white">
         <div class="p-2 w-100 bg-dark fs-5">
             <b>[[${#authentication.getPrincipal().getUsername()}]]</b>
@@ -23,23 +23,23 @@
         </div>
     </div>
 </div>
-<table id="adminPanel">
-<!--<table id="adminPanel" class="visually-hidden">-->
+<!--Admin panel tab-->
+<table id="adminPanelTab" class="visually-hidden">
     <tr>
-        <td class="navbar" style="width: 100px;">
+        <td class="navbar w-100">
             <nav class="nav nav-pills w-100">
-                <a class="nav-link active w-100" href="showAll">Admin</a>
-                <a class="nav-link w-100" href="userInfo">User</a>
+                <a class="nav-link w-100 btn active">Admin</a>
+                <a class="nav-link w-100 btn" id="userPanel">User</a>
             </nav>
         </td>
         <td class="bg-light w-100 px-3 pb-2">
             <p class="fs-1"><b>Admin panel</b></p>
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="showAll">Users table</a>
+                    <a class="nav-link btn active">Users table</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="addNewUser">New User</a>
+                    <a class="nav-link btn" id="newUserMenu">New User</a>
                 </li>
             </ul>
             <div class="fs-4 p-2 fw-bold border-end border-start">All users</div>
@@ -51,51 +51,111 @@
         </td>
     </tr>
 </table>
-
-<!--<div class="modal fade show" style="display: block;" role="dialog" aria-modal="true">-->
-<!--<div class="modal fade" style="display: none;" aria-hidden="true">-->
-
-<!-- User Edit -->
+<!--New user tab-->
+<table id="newUserTab" class="visually-hidden">
+    <tr style="vertical-align: top;">
+        <td class="navbar w-100">
+            <nav class="nav nav-pills w-100">
+                <a class="nav-link w-100 btn active">Admin</a>
+                <a class="nav-link w-100 btn">User</a>
+            </nav>
+        </td>
+        <td class="bg-light w-100 px-3 pb-2">
+            <p class="fs-1"><b>Admin panel</b></p>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link btn" id="usersTableMenu">Users table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn active">New User</a>
+                </li>
+            </ul>
+            <div class="fs-4 p-2 border-end border-start"><b>Add new user</b></div>
+            <div class="p-2 bg-white border border-1">
+                <div class="container">
+                    <div class="pagination justify-content-center m-4">
+                        <div class="col-sm fw-bold text-center" style="max-width: 350px;">
+                            First name
+                            <input type="text" class="form-control mb-3" id="newName" placeholder="First name"
+                                   required/>
+                            Last name
+                            <input type="text" class="form-control mb-3" id="newSurname" placeholder="Last name"/>
+                            Username
+                            <input type="text" class="form-control mb-3" id="newUsername" placeholder="username"
+                                   required/>
+                            Password
+                            <input type="password" class="form-control mb-3" id="newPassword" placeholder="Password"
+                                   required/>
+                            Roles
+                            <select class="form-control w-100 px-2 py-1 mb-3" style="height: 52px;" multiple
+                                    id="newRoles">
+                            </select>
+                            <input type="button" class="btn btn-success" id="addNewUserButton" value="Add new user"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+<!--User tab-->
+<table id="currentUserView" class="visually-hidden">
+    <tr>
+        <td class="navbar w-100">
+            <nav class="nav nav-pills w-100">
+                <a class="nav-link btn w-100" id="adminPanel">Admin</a>
+                <a class="nav-link btn w-100 active">User</a>
+            </nav>
+        </td>
+        <td class="bg-light w-100 px-3 pb-2">
+            <p class="fs-1 fw-bold">User information-page</p>
+            <div class="fs-4 p-2 fw-bold border border-bottom-0">About user</div>
+            <div class="border border-1 p-3 bg-white">
+                <table class="table table-striped" id="usersTable">
+                    <tr></tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+<!-- Modal dialog -->
 <div class="modal fade" id="editUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="container form-horizontal" method="POST" action="saveUser">
+            <div class="container form-horizontal">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBLabel">Edit user</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div align="center">
-                        <div class="col-sm in">
-                            <label class="h6 up_sp" for="name" id="labelName"><b>First name</b></label>
-                            <input type="text" class="form-control" id="name" placeholder="First name" required/>
-                            <label class="h6 up_sp" for="surname" id="labelSurname"><b>Last name</b></label>
-                            <input type="text" class="form-control" id="surname" placeholder="Last name"/>
-                           <label class="h6 up_sp" for="username" id="labelUsername"><b>Username</b></label>
-                            <input type="text" class="form-control" id="username" placeholder="username" required/>
-                            <label class="h6 up_sp" for="password" id="labelPassword"><b>Password</b></label>
-                            <input type="password" class="form-control" id="password" placeholder="Password" required/>
-                            <label class="h6 up_sp"><b>Roles</b></label>
-                            <div class="btn-group list-group roles" role="group" id="roleGroup">
-                                <!-- roles checkboxes -->
-                            </div>
+                    <div class="pagination justify-content-center">
+                        <div class="col-sm fw-bold text-center" style="max-width: 350px;">
+                            ID
+                            <input id="id" type="text" readonly class="form-control"/>
+                            First name
+                            <input id="name" type="text" class="form-control" placeholder="First name" required/>
+                            Last name
+                            <input id="surname" type="text" class="form-control" placeholder="Last name"/>
+                            Username
+                            <input id="username" type="text" class="form-control" placeholder="username" required/>
+                            <label id="labelPassword" for="password">Password</label>
+                            <input id="password" type="password" class="form-control" placeholder="Password" required/>
+                            Roles
+                            <select class="form-control w-100 px-2 py-1" style="height: 52px;" multiple id="roles">
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="action-btn">Edit</button>
+                    <button type="button" class="btn btn-primary" name="action-btn">Edit</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-
-<!--<script src="../static/js/bootstrap.min.js"></script>-->
-<!--<script src="../static/js/indexJSCode.js" type="module"></script>-->
 <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 <script src="../static/js/indexJSCode.js" th:src="@{/js/indexJSCode.js}" type="module"></script>
-
 </body>
 </html>

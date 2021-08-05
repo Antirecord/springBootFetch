@@ -12,7 +12,7 @@ export const getAllRoles = async () => {
         .then(role => role.map((r, iter) => allRoles[iter] =
             {
                 id: r.id,
-                name: r.name.substr(r.name.indexOf("_") + 1),
+                name: roleName(r.name),
                 checked: false,
             }
         ));
@@ -43,10 +43,20 @@ export const getAllUsers = async () => {
     return allUsers;
 }
 
-export const setToken = (token) => {
-    sessionStorage.setItem('tokenData', JSON.stringify(token));
+export const roleName = role => {
+    return role.substr(role.indexOf("_") + 1).toUpperCase();
 }
 
-export const getToken = () => {
-    return sessionStorage.getItem('tokenData');
+export const getCurrentUser = async () => {
+    let user = null;
+    await fetch(baseUrl + "/login", {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic YWRtaW46YWRtaW4="
+        }
+    })
+        .then(response => response.json())
+        .then(u => user = u)
+        .catch(error => console.log('error', error));
+    return user;
 }

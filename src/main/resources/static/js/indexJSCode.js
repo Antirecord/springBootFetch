@@ -1,3 +1,3 @@
-import {renderAdminPanel} from "./adminPanel.js";
+import {adminPanelTab} from "./adminPanel.js";
 
-renderAdminPanel();
+adminPanelTab();
