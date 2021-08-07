@@ -1,37 +1,60 @@
 import {actionButton, passwordMask} from "./constants.js";
-import {getAllRoles, getUser} from "./getSetObjects.js";
+import {deleteUser, editUser, getAllRoles, getCurrentUser, getUser} from "./getSetObjects.js";
+import {showAdminPanelTab, rolesFromOptionArray, renderBlackMenu} from "./adminPanel.js";
 
-export const editUser = async userId => {
+export const editUserModalDialog = async userId => {
     setDialogElements(userId, "Edit user", actionButton.EDIT);
     renderDialogFields(await getUser(userId), true);
 }
 
-export const delUser = async userId => {
+export const delUserModalDialog = async userId => {
     setDialogElements(userId, "Delete user", actionButton.DELETE);
     renderDialogFields(await getUser(userId), false);
 }
 
-const setDialogElements = (userId, captionText, actionButton) => {
+const setDialogElements = (userId, captionText, button) => {
     const caption = document.getElementById("staticBLabel");
     caption.innerText = captionText;
-    const actionBtn = document.getElementsByName("action-btn")[0];
-    // const formAction = document.querySelector(".form-horizontal");
-    switch (actionButton) {
+    const actionBtn = document.getElementById("action-btn");
+    switch (button) {
         case actionButton.EDIT: {
-            // formAction.action = ""
             actionBtn.textContent = "Edit";
             actionBtn.classList.add("btn-primary");
             actionBtn.classList.remove("btn-danger");
+            const modalDialogButton = document.getElementById("action-btn");
+            modalDialogButton.removeEventListener("click", () => deleteEditedUser());
+            modalDialogButton.addEventListener("click", () => saveEditedUser());
             break;
         }
         case actionButton.DELETE: {
-            // formAction.action = "/deleteUser/" + userId;
             actionBtn.textContent = "Delete";
             actionBtn.classList.remove("btn-primary");
             actionBtn.classList.add("btn-danger");
+            const modalDialogButton = document.getElementById("action-btn");
+            modalDialogButton.removeEventListener("click", () => saveEditedUser());
+            modalDialogButton.addEventListener("click", () => deleteEditedUser());
             break;
         }
     }
+}
+
+const saveEditedUser = async () => {
+    const id = document.getElementById("id").value;
+    const name = document.getElementById("name").value;
+    const surname = document.getElementById("surname").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const roles = rolesFromOptionArray(document.getElementById("roles").options);
+    const user = {id, username, password, name, surname, roles};
+    await editUser(user);
+    renderBlackMenu(await getCurrentUser());
+    showAdminPanelTab();
+}
+
+const deleteEditedUser = async () => {
+    const id = document.getElementById("id").value;
+    await deleteUser(id);
+    showAdminPanelTab();
 }
 
 const renderDialogFields = async ({id, name, roles, surname, username}, enabledInputFields) => {
@@ -47,7 +70,7 @@ const renderDialogFields = async ({id, name, roles, surname, username}, enabledI
     let listRoles = [];
     if (enabledInputFields) {
         allRoles.forEach(role => {
-            roles.forEach(userRole => role.checked = (role.id === userRole.id));
+            roles.forEach(userRole => {role.checked = (role.checked || role.id === userRole.id)});
         });
         inPassword.classList.remove("visually-hidden");
         labelPassword.classList.remove("visually-hidden");
@@ -65,6 +88,7 @@ const renderDialogFields = async ({id, name, roles, surname, username}, enabledI
     listRoles.sort(r => r.checked ? -1 : 1).forEach(role => {
         let option = document.createElement("option");
         option.append(document.createTextNode(role.name));
+        option.value = role.id;
         option.selected = role.checked;
         option.disabled = !enabledInputFields;
         groupRole.append(option);

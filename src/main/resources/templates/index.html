@@ -8,19 +8,12 @@
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
 </head>
 <body>
-
-<!--<body class="modal-open" style="overflow: hidden; padding-right: 0px;">-->
-<!--if showed modal dialog-->
-<div id="topMenu">
-    <!--<div id="topMenu" class="visually-hidden">-->
-    <div class="d-flex text-white">
-        <div class="p-2 w-100 bg-dark fs-5">
-            <b>[[${#authentication.getPrincipal().getUsername()}]]</b>
-            with roles: [[${#authentication.getPrincipal().authorities}]]
-        </div>
-        <div class="p-2 bg-dark">
-            <a class="text-secondary text-decoration-none pe-3" href="/logout">Logout</a>
-        </div>
+<div class="d-flex text-white">
+    <div class="p-2 w-100 bg-dark fs-5">
+<!--Top black MENU-->
+    </div>
+    <div class="p-2 bg-dark">
+        <a class="text-secondary text-decoration-none pe-3" href="/logout">Logout</a>
     </div>
 </div>
 <!--Admin panel tab-->
@@ -57,7 +50,7 @@
         <td class="navbar w-100">
             <nav class="nav nav-pills w-100">
                 <a class="nav-link w-100 btn active">Admin</a>
-                <a class="nav-link w-100 btn">User</a>
+                <a class="nav-link w-100 btn" id="userPanelNewTab">User</a>
             </nav>
         </td>
         <td class="bg-light w-100 px-3 pb-2">
@@ -149,7 +142,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" name="action-btn">Edit</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="action-btn">Zuzu</button>
                 </div>
             </div>
         </div>

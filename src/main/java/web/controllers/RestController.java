@@ -3,20 +3,28 @@ package web.controllers;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import web.entities.Role;
 import web.entities.User;
 import web.services.UserService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
-public class RestControllerAdmin {
+public class RestController {
     private final UserService userService;
+    private final PasswordEncoder encoder;
 
-    public RestControllerAdmin(UserService userService) {
+    public RestController(UserService userService, PasswordEncoder encoder) {
         this.userService = userService;
+        this.encoder = encoder;
+        if (userService.getAllUsers().size() == 0) {
+            addDefaultUsersAndRoles();
+        }
     }
 
     @GetMapping(value = "/admin/getAllUsers", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,23 +47,30 @@ public class RestControllerAdmin {
         return userService.getAllRoles();
     }
 
-    @PostMapping("/admin/addUser")
-    public void addUser(User user) {
-
+    @PostMapping("/admin/addNewUser")
+    public void addUser(@RequestBody User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        userService.saveUser(user);
     }
 
     @PutMapping("/admin/editUser")
-    public void editUser(User user) {
-
+    public void editUser(@RequestBody User user) {
+        if (user.getPassword().equals("_`@$secret$@`_")) {
+            user.setPassword(userService.getUser(user.getId()).getPassword());
+        } else {
+            user.setPassword(encoder.encode(user.getPassword()));
+        }
+        userService.saveUser(user);
     }
 
-    @DeleteMapping("/admin/deleteUser")
-    public void deleteUser(User user) {
-
+    @DeleteMapping("/admin/deleteUser/{id}")
+    public void deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody User getAuthUser() {
+    public @ResponseBody
+    User getAuthUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             Object principal = auth.getPrincipal();
@@ -65,5 +80,19 @@ public class RestControllerAdmin {
             }
         }
         return null;
+    }
+
+    private void addDefaultUsersAndRoles() {
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("ROLE_ADMIN"));
+        User user = new User("admin", encoder.encode("admin"),
+                "Administrator", "DefaultAdminAccount", roles);
+        userService.saveUser(user);
+        roles.clear();
+        roles.add(new Role("ROLE_USER"));
+        user = new User("user", encoder.encode("user"),
+                "User", "DefaultUserAccount", roles);
+        userService.saveUser(user);
+        userService.saveRole(new Role("ROLE_GUEST"));
     }
 }

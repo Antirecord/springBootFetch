@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(long id) {
         User user = userRepository.getById(id);
-        user.setRoles(new HashSet<>());
+        user.setRoles(null);
         saveUser(user);
         userRepository.deleteById(id);
     }
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(User user) {
-        user.setRoles(new HashSet<>());
+        user.setRoles(null);
         saveUser(user);
         userRepository.delete(user);
     }

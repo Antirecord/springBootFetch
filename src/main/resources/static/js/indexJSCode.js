@@ -1,3 +1,11 @@
-import {adminPanelTab} from "./adminPanel.js";
+import {showAdminPanelTab, setEventListenners, showUserPanel, renderBlackMenu} from "./adminPanel.js";
+import {getCurrentUser, isAdmin} from "./getSetObjects.js";
 
-adminPanelTab();
+setEventListenners();
+let user = await getCurrentUser();
+renderBlackMenu(user);
+if (isAdmin(user)) {
+    showAdminPanelTab(user);
+} else {
+    showUserPanel();
+}

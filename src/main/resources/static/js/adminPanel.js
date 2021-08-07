@@ -1,5 +1,5 @@
-import {getAllRoles, getAllUsers, getCurrentUser, roleName} from "./getSetObjects.js";
-import {delUser, editUser} from "./modalDialog.js";
+import {getAllRoles, getAllUsers, getCurrentUser, isAdmin, roleName, saveNewUser} from "./getSetObjects.js";
+import {delUserModalDialog, editUserModalDialog} from "./modalDialog.js";
 
 const renderAdminPanel = async () => {
     const allUsers = await getAllUsers();
@@ -8,34 +8,50 @@ const renderAdminPanel = async () => {
     tbody.innerHTML = "";
     addHeaders(tbody, false);
     allUsers.forEach(user => addRow(user, tbody, false));
+}
+
+export const renderBlackMenu = (user) => {
+    const blackMenu = document.getElementsByClassName("p-2 w-100 bg-dark fs-5")[0];
+    blackMenu.innerHTML = "<b>" + user.username + "</b>" + " with roles: " + arrayRolesToComaList(user.roles);
+}
+
+export const setEventListenners = () => {
     const newUserMenu = document.getElementById("newUserMenu");
     newUserMenu.addEventListener("click", () => newUserTab());
     const usersTableMenu = document.getElementById("usersTableMenu");
-    usersTableMenu.addEventListener("click", () => adminPanelTab());
+    usersTableMenu.addEventListener("click", () => showAdminPanelTab());
     const userPanel = document.getElementById("userPanel");
     userPanel.addEventListener("click", () => showUserPanel());
+    const userPanelNewTab = document.getElementById("userPanelNewTab");
+    userPanelNewTab.addEventListener("click", () => showUserPanel());
     const adminPanel = document.getElementById("adminPanel");
-    adminPanel.addEventListener("click", () => adminPanelTab());
+    adminPanel.addEventListener("click", () => showAdminPanelTab());
+    const addNewUserButton = document.getElementById("addNewUserButton");
+    addNewUserButton.addEventListener("click", () => addNewUser());
 }
 
 const renderUserPanel = async () => {
     let user = await getCurrentUser();
+    const adminPanelMenu = document.getElementById("adminPanel");
+    if (isAdmin(user)) {
+        adminPanelMenu.classList.remove("visually-hidden");
+    } else {
+        adminPanelMenu.classList.add("visually-hidden");
+    }
     const tableUsersList = document.getElementById("usersTable");
     const tbody = tableUsersList.getElementsByTagName("TBODY")[0];
     tbody.innerHTML = "";
     addHeaders(tbody, true);
     addRow(user, tbody, true);
-
 }
 
 const newUserTab = async () => {
-    const addNewUserButton = document.getElementById("addNewUserButton");
-    addNewUserButton.addEventListener("click", () => addNewUser());
     const newRoles = document.getElementById("newRoles");
     newRoles.innerHTML = "";
     (await getAllRoles()).forEach(role => {
         let option = document.createElement("option");
         option.append(document.createTextNode(role.name));
+        option.value = role.id;
         newRoles.append(option);
     });
     const adminPanelTab = document.getElementById("adminPanelTab");
@@ -46,7 +62,7 @@ const newUserTab = async () => {
     newUserTab.classList.remove("visually-hidden");
 }
 
-export const adminPanelTab = () => {
+export const showAdminPanelTab = () => {
     const newUserTab = document.getElementById("newUserTab");
     newUserTab.classList.add("visually-hidden");
     const currentUserView = document.getElementById("currentUserView");
@@ -56,16 +72,18 @@ export const adminPanelTab = () => {
     adminPanelTab.classList.remove("visually-hidden");
 }
 
-const addNewUser = () => {
-    const newName = document.getElementById("newName");
-    const newSurname = document.getElementById("newSurname");
-    const newUsername = document.getElementById("newUsername");
-    const newPassword = document.getElementById("newPassword");
-
-
+const addNewUser = async () => {
+    const name = document.getElementById("newName").value;
+    const surname = document.getElementById("newSurname").value;
+    const username = document.getElementById("newUsername").value;
+    const password = document.getElementById("newPassword").value;
+    const roles = rolesFromOptionArray(document.getElementById("newRoles").options);
+    const user = {id: 0, username, password, name, surname, roles};
+    await saveNewUser(user);
+    showAdminPanelTab();
 }
 
-const showUserPanel = () => {
+export const showUserPanel = () => {
     const newUserTab = document.getElementById("newUserTab");
     newUserTab.classList.add("visually-hidden");
     const adminPanelTab = document.getElementById("adminPanelTab");
@@ -86,18 +104,18 @@ const addRow = (user, tbody, isWithoutOperationsColumn) => {
     td[1].append(document.createTextNode(user.name));
     td[2].append(document.createTextNode(user.surname));
     td[3].append(document.createTextNode(user.username));
-    td[4].append(document.createTextNode(splitRoles(user.roles)));
+    td[4].append(document.createTextNode(arrayRolesToComaList(user.roles)));
     if (!isWithoutOperationsColumn) {
         const buttonEdit = document.createElement("button");
         buttonEdit.setAttribute("data-bs-toggle", "modal");
         buttonEdit.setAttribute("data-bs-target", "#editUser");
-        buttonEdit.addEventListener("click", () => editUser(user.id));
+        buttonEdit.addEventListener("click", () => editUserModalDialog(user.id));
         buttonEdit.classList.add("btn", "btn-info");
         buttonEdit.append(document.createTextNode("Edit"));
         const buttonDel = document.createElement("button");
         buttonDel.setAttribute("data-bs-toggle", "modal");
         buttonDel.setAttribute("data-bs-target", "#editUser");
-        buttonDel.addEventListener("click", () => delUser(user.id))
+        buttonDel.addEventListener("click", () => delUserModalDialog(user.id))
         buttonDel.classList.add("btn", "btn-danger");
         buttonDel.append(document.createTextNode("Delete"));
         td[5].append(buttonEdit, buttonDel);
@@ -127,8 +145,23 @@ const addHeaders = (tbody, isWithoutOperationsColumn) => {
     tbody.append(headers);
 }
 
-const splitRoles = (roles) => {
+const arrayRolesToComaList = (roles) => {
     let string = "";
     roles.forEach(r => string += roleName(r.name) + ", ");
     return string.substr(0, string.length - 2);
+}
+
+export const rolesFromOptionArray = arrayRoles => {
+    const roles = [];
+    let iter = 0;
+    for (let option of arrayRoles) {
+        if (option.selected) {
+            roles[iter++] = {
+                id: option.value,
+                name: "ROLE_" + option.text,
+                users: null
+            }
+        }
+    }
+    return roles;
 }

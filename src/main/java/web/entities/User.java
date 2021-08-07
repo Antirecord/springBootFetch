@@ -21,7 +21,6 @@ public @Data class User {
     @NonNull
     private String username;
     @Column(nullable = false)
-    @JsonIgnore
     @NonNull
     private String password;
     @Column(length = 50, nullable = false)

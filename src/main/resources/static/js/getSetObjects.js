@@ -60,3 +60,52 @@ export const getCurrentUser = async () => {
         .catch(error => console.log('error', error));
     return user;
 }
+
+export const saveNewUser = async (user) => {
+    await fetch(baseUrl + "/admin/addNewUser", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(user)
+    });
+}
+
+export const editUser = async (user) => {
+    await fetch(baseUrl + "/admin/editUser", {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(user)
+    });
+}
+
+export const deleteUser = async (id) => {
+    await fetch(baseUrl + "/admin/deleteUser/" + id, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        }
+    });
+}
+
+export const ifIncludeRole = (roleArray, roleName) => {
+    let hasRoleName = false;
+    roleArray.forEach(r => {hasRoleName = hasRoleName || r.name === roleName});
+    return hasRoleName;
+}
+
+export  const isAdmin = (user) => {
+    return ifIncludeRole(user.roles, "ROLE_ADMIN");
+}
