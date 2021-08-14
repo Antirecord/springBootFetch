@@ -8,27 +8,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import web.configs.handler.LoginSuccessHandler;
-import web.repositories.JwtCsrfFilter;
-import web.repositories.JwtTokenRepository;
 import web.services.UserServiceImpl;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserServiceImpl userService;
-    private final JwtTokenRepository jwtTokenRepository;
     private final HandlerExceptionResolver resolver;
 
-    public SecurityConfig(UserServiceImpl userService, JwtTokenRepository jwtTokenRepository,
+    public SecurityConfig(UserServiceImpl userService,
                           @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
         this.userService = userService;
-        this.jwtTokenRepository = jwtTokenRepository;
         this.resolver = resolver;
     }
 

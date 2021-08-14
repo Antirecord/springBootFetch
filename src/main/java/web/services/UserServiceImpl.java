@@ -30,12 +30,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUser(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = getUser(email);
         if(user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+            throw new UsernameNotFoundException(String.format("User '%s' not found", email));
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User getUser(String userName) {
-        return userRepository.findByUsername(userName);
+        return userRepository.findByEmail(userName);
     }
 
     @Override

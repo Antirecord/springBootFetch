@@ -69,8 +69,7 @@ public class RestController {
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    User getAuthUser() {
+    public @ResponseBody User getAuthUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             Object principal = auth.getPrincipal();
@@ -85,13 +84,13 @@ public class RestController {
     private void addDefaultUsersAndRoles() {
         Set<Role> roles = new HashSet<>();
         roles.add(new Role("ROLE_ADMIN"));
-        User user = new User("admin", encoder.encode("admin"),
-                "Administrator", "DefaultAdminAccount", roles);
+        User user = new User("admin@mail.ru", encoder.encode("admin"),
+                "Administrator", "DefaultAdminAccount", 22, roles);
         userService.saveUser(user);
         roles.clear();
         roles.add(new Role("ROLE_USER"));
-        user = new User("user", encoder.encode("user"),
-                "User", "DefaultUserAccount", roles);
+        user = new User("user@mail.ru", encoder.encode("user"),
+                "User", "DefaultUserAccount", 22, roles);
         userService.saveUser(user);
         userService.saveRole(new Role("ROLE_GUEST"));
     }

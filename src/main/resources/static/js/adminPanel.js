@@ -12,7 +12,7 @@ const renderAdminPanel = async () => {
 
 export const renderBlackMenu = (user) => {
     const blackMenu = document.getElementsByClassName("p-2 w-100 bg-dark fs-5")[0];
-    blackMenu.innerHTML = "<b>" + user.username + "</b>" + " with roles: " + arrayRolesToComaList(user.roles);
+    blackMenu.innerHTML = "<b>" + user.email + "</b>" + " with roles: " + arrayRolesToComaList(user.roles);
 }
 
 export const setEventListenners = () => {
@@ -73,12 +73,13 @@ export const showAdminPanelTab = () => {
 }
 
 const addNewUser = async () => {
-    const name = document.getElementById("newName").value;
-    const surname = document.getElementById("newSurname").value;
-    const username = document.getElementById("newUsername").value;
+    const firstName = document.getElementById("newFirstName").value;
+    const lastName = document.getElementById("newLastName").value;
+    const age = document.getElementById("newAge").value;
+    const email = document.getElementById("newEmail").value;
     const password = document.getElementById("newPassword").value;
     const roles = rolesFromOptionArray(document.getElementById("newRoles").options);
-    const user = {id: 0, username, password, name, surname, roles};
+    const user = {id: 0, email , password, firstName, lastName, age, roles};
     await saveNewUser(user);
     showAdminPanelTab();
 }
@@ -96,15 +97,16 @@ export const showUserPanel = () => {
 const addRow = (user, tbody, isWithoutOperationsColumn) => {
     const row = document.createElement("tr");
     const td = [];
-    let end = isWithoutOperationsColumn ? 5 : 6;
+    let end = isWithoutOperationsColumn ? 6 : 7;
     for (let i = 0; i < end; i++) {
         td[i] = document.createElement("td");
     }
     td[0].append(document.createTextNode(user.id));
-    td[1].append(document.createTextNode(user.name));
-    td[2].append(document.createTextNode(user.surname));
-    td[3].append(document.createTextNode(user.username));
-    td[4].append(document.createTextNode(arrayRolesToComaList(user.roles)));
+    td[1].append(document.createTextNode(user.firstName));
+    td[2].append(document.createTextNode(user.lastName));
+    td[3].append(document.createTextNode(user.age));
+    td[4].append(document.createTextNode(user.email));
+    td[5].append(document.createTextNode(arrayRolesToComaList(user.roles)));
     if (!isWithoutOperationsColumn) {
         const buttonEdit = document.createElement("button");
         buttonEdit.setAttribute("data-bs-toggle", "modal");
@@ -118,8 +120,8 @@ const addRow = (user, tbody, isWithoutOperationsColumn) => {
         buttonDel.addEventListener("click", () => delUserModalDialog(user.id))
         buttonDel.classList.add("btn", "btn-danger");
         buttonDel.append(document.createTextNode("Delete"));
-        td[5].append(buttonEdit, buttonDel);
-        td[5].setAttribute("style", "width: 155px;");
+        td[6].append(buttonEdit, buttonDel);
+        td[6].setAttribute("style", "width: 155px;");
     }
     row.append(...td);
     tbody.append(row);
@@ -128,18 +130,19 @@ const addRow = (user, tbody, isWithoutOperationsColumn) => {
 const addHeaders = (tbody, isWithoutOperationsColumn) => {
     const headers = document.createElement("tr");
     const th = [];
-    let end = isWithoutOperationsColumn ? 5 : 6;
+    let end = isWithoutOperationsColumn ? 6 : 7;
     for (let i = 0; i < end; i++) {
         th[i] = document.createElement("th");
     }
     th[0].append(document.createTextNode("ID"));
-    th[1].append(document.createTextNode("Name"));
+    th[1].append(document.createTextNode("Firstname"));
     th[2].append(document.createTextNode("Lastname"));
-    th[3].append(document.createTextNode("Username"));
-    th[4].append(document.createTextNode("Roles"));
+    th[3].append(document.createTextNode("Age"));
+    th[4].append(document.createTextNode("Email"));
+    th[5].append(document.createTextNode("Roles"));
     if (!isWithoutOperationsColumn) {
-        th[5].append(document.createTextNode("Operations"));
-        th[5].classList.add("text-center");
+        th[6].append(document.createTextNode("Operations"));
+        th[6].classList.add("text-center");
     }
     headers.append(...th);
     tbody.append(headers);

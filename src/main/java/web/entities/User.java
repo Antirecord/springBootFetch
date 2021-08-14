@@ -1,14 +1,8 @@
 package web.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NonNull;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -19,15 +13,17 @@ public @Data class User {
     private Long id;
     @Column(length = 50, nullable = false, unique = true)
     @NonNull
-    private String username;
+    private String email;
     @Column(nullable = false)
     @NonNull
     private String password;
-    @Column(length = 50, nullable = false)
-    private String name;
-    @Column(length = 50, nullable = false)
-    private String surname;
+    @Column(length = 50)
+    private String firstName;
+    @Column(length = 50)
+    private String lastName;
 
+    @Column(length = 3, nullable = false)
+    private int age;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -37,75 +33,17 @@ public @Data class User {
     public User() {
     }
 
-    public User(String username) {
-        this.username = username;
+    public User(String email) {
+        this.email = email;
     }
 
-    public User(String username, String password, String name, String surname, Set<Role> roles) {
-        this.username = username;
+    public User(String email, String password, String firstName, String lastName, int age, Set<Role> roles) {
+        this.email = email;
         this.password = password;
-        this.name = name;
-        this.surname = surname;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
         this.roles = roles;
     }
 
-//    public void setRoles(Set<Role> roles) {
-//        this.roles = roles;
-//    }
-//
-//    public Set<Role> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setUsername(String username) {
-//        this.username = username.trim().toLowerCase();
-//    }
-//
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
-//
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setSurname(String surname) {
-//        this.surname = surname;
-//    }
-//
-//    public String getSurname() {
-//        return surname;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "id=" + id +
-//                ", username='" + username + '\'' +
-//                ", password='" + password + '\'' +
-//                ", name='" + name + '\'' +
-//                ", surname='" + surname + '\'' +
-//                ", roles=" + roles +
-//                '}';
-//    }
 }

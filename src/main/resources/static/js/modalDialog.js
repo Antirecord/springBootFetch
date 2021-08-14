@@ -40,12 +40,13 @@ const setDialogElements = (userId, captionText, button) => {
 
 const saveEditedUser = async () => {
     const id = document.getElementById("id").value;
-    const name = document.getElementById("name").value;
-    const surname = document.getElementById("surname").value;
-    const username = document.getElementById("username").value;
+    const firstName = document.getElementById("firstname").value;
+    const lastName = document.getElementById("lastname").value;
+    const age = document.getElementById("age").value;
+    const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const roles = rolesFromOptionArray(document.getElementById("roles").options);
-    const user = {id, username, password, name, surname, roles};
+    const user = {id, email, password, firstName, lastName, age, roles};
     await editUser(user);
     renderBlackMenu(await getCurrentUser());
     showAdminPanelTab();
@@ -57,11 +58,12 @@ const deleteEditedUser = async () => {
     showAdminPanelTab();
 }
 
-const renderDialogFields = async ({id, name, roles, surname, username}, enabledInputFields) => {
+const renderDialogFields = async ({id, firstName, roles, lastName, age, email}, enabledInputFields) => {
     const idField = document.getElementById("id");
-    const inName = document.getElementById("name");
-    const inSurname = document.getElementById("surname");
-    const inUsername = document.getElementById("username");
+    const inFirstName = document.getElementById("firstname");
+    const inLastName = document.getElementById("lastname");
+    const inAge = document.getElementById("age");
+    const inEmail = document.getElementById("email");
     const inPassword = document.getElementById("password");
     const labelPassword = document.getElementById("labelPassword");
     const groupRole = document.getElementById("roles");
@@ -94,11 +96,13 @@ const renderDialogFields = async ({id, name, roles, surname, username}, enabledI
         groupRole.append(option);
     });
     idField.setAttribute("value", id);
-    inName.setAttribute("value", name);
-    inName.disabled = !enabledInputFields;
-    inSurname.setAttribute("value", surname);
-    inSurname.disabled = !enabledInputFields;
-    inUsername.setAttribute("value", username);
-    inUsername.disabled = !enabledInputFields;
+    inFirstName.setAttribute("value", firstName);
+    inFirstName.disabled = !enabledInputFields;
+    inLastName.setAttribute("value", lastName);
+    inLastName.disabled = !enabledInputFields;
+    inAge.setAttribute("value", age);
+    inAge.disabled = !enabledInputFields;
+    inEmail.setAttribute("value", email);
+    inEmail.disabled = !enabledInputFields;
     inPassword.setAttribute("value", passwordMask);
 }
