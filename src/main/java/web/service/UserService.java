@@ -1,8 +1,8 @@
-package web.services;
+package web.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import web.entities.Role;
-import web.entities.User;
+import web.entity.Role;
+import web.entity.User;
 
 import java.util.List;
 

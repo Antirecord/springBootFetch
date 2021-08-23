@@ -1,4 +1,4 @@
-package web.entities;
+package web.entity;
 
 import io.jsonwebtoken.lang.Strings;
 import lombok.Data;

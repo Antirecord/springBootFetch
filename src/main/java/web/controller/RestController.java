@@ -1,18 +1,19 @@
-package web.controllers;
+package web.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import web.entities.Role;
-import web.entities.User;
-import web.services.UserService;
+import web.entity.Role;
+import web.entity.User;
+import web.service.UserService;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 public class RestController {
@@ -48,24 +49,30 @@ public class RestController {
     }
 
     @PostMapping("/admin/addNewUser")
-    public void addUser(@RequestBody User user) {
+    public ResponseEntity<?> addUser(@RequestBody User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         userService.saveUser(user);
+        User addedUser = userService.getUser(user.getId());
+        return ResponseEntity.ok(addedUser);
     }
 
     @PutMapping("/admin/editUser")
-    public void editUser(@RequestBody User user) {
+    public ResponseEntity<?> editUser(@RequestBody User user) {
         if (user.getPassword().equals("_`@$secret$@`_")) {
             user.setPassword(userService.getUser(user.getId()).getPassword());
         } else {
             user.setPassword(encoder.encode(user.getPassword()));
         }
         userService.saveUser(user);
+        User editUser = userService.getUser(user.getId());
+        return ResponseEntity.ok(editUser);
     }
 
     @DeleteMapping("/admin/deleteUser/{id}")
-    public void deleteUser(@PathVariable long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+
         userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)

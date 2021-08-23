@@ -52,7 +52,7 @@ export const getCurrentUser = async () => {
     await fetch(baseUrl + "/login", {
         method: 'POST',
         headers: {
-            "Authorization": "Basic YWRtaW46YWRtaW4="
+            "Authorization": "Basic YWRtaW5AbWFpbC5ydTphZG1pbg=="
         }
     })
         .then(response => response.json())

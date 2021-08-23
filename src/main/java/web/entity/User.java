@@ -1,4 +1,4 @@
-package web.entities;
+package web.entity;
 
 import lombok.Data;
 import lombok.NonNull;

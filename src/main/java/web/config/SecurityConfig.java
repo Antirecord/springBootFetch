@@ -1,4 +1,4 @@
-package web.configs;
+package web.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import web.configs.handler.LoginSuccessHandler;
-import web.services.UserServiceImpl;
+import web.config.handler.LoginSuccessHandler;
+import web.service.UserServiceImpl;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,24 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.sessionManagement()
-                // отключаем генерацию сессии
-//                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-//                .and()
-                // указываем созданный нами фильтр JwtCsrfFilter в расположение стандартного фильтра,
-                // при этом игнорируем обработку стандартного
-//                .addFilterAt(new JwtCsrfFilter(jwtTokenRepository, resolver), CsrfFilter.class)
-//                .csrf().ignoringAntMatchers("/api/**");
-//                .and()
-//                .authorizeRequests()
-//                // для запроса /auth/login выполняем авторизацию силами security.
-//                // Что бы не было двойной валидации (по токену и базовой),
-//                // запрос был добавлен в исключение к классу JwtCsrfFilter
-//                .antMatchers("/api/login").authenticated()
-                // ошибки базовой авторизации отправляем в обработку GlobalExceptionHandler
-//                .httpBasic()
-//                .authenticationEntryPoint((request, response, e)
-//                        -> resolver.resolveException(request, response, null, e));
         http.formLogin()
                 // указываем страницу с формой логина
                 .loginPage("/login")
